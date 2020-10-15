@@ -47,6 +47,7 @@ func NewFaucet(opts ...Option) (*Faucet, error) {
 
 func (f *Faucet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		var req httpRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
