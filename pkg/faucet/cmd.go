@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"strings"
 )
 
-func (f *Faucet) executeCli(args []string, inputs ...string) (string, error) {
-	cmd := exec.Command(f.appCli, args...)
+func cmdexec(bin string, args []string, inputs ...string) (string, error) {
+	cmd := exec.Command(bin, args...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
@@ -32,5 +33,9 @@ func (f *Faucet) executeCli(args []string, inputs ...string) (string, error) {
 		return "", fmt.Errorf("error executing command: %s", string(stderr.Bytes()))
 	}
 
-	return string(stdout.Bytes()), err
+	return strings.TrimSpace(string(stdout.Bytes())), err
+}
+
+func (f *Faucet) cliexec(args []string, inputs ...string) (string, error) {
+	return cmdexec(f.appCli, args, inputs...)
 }

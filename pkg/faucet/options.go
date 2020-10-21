@@ -1,11 +1,11 @@
 package faucet
 
 var defaultOptions = Options{
-	AppCli:       "gaiacli",
-	KeyName:      "faucet",
-	Denom:        "atom",
-	CreditAmount: 10000000,
-	MaxCredit:    100000000,
+	AppCli:       DefaultAppCli,
+	KeyName:      DefaultKeyName,
+	Denom:        DefaultDenom,
+	CreditAmount: DefaultCreditAmount,
+	MaxCredit:    DefaultMaximumCredit,
 }
 
 type Options struct {
