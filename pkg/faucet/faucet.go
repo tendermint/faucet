@@ -2,9 +2,10 @@ package faucet
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/codec/types"
+	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	"github.com/cosmos/cosmos-sdk/std"
+	bank "github.com/cosmos/cosmos-sdk/x/bank/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
@@ -18,7 +19,7 @@ type Faucet struct {
 	denom           string
 	creditAmount    uint64
 	maxCredit       uint64
-	cdc             *codec.Codec
+	cdc             *codec.ProtoCodec
 }
 
 func NewFaucet(opts ...Option) (*Faucet, error) {
@@ -27,16 +28,14 @@ func NewFaucet(opts ...Option) (*Faucet, error) {
 		opt(options)
 	}
 
-	cdc := codec.New()
-	codec.RegisterCrypto(cdc)
-	sdk.RegisterCodec(cdc)
-	cdc.RegisterConcrete(auth.StdTx{}, stdTxCodecType, nil)
-	cdc.RegisterConcrete(bank.MsgSend{}, msgSendCodecType, nil)
-
-	chainID, err := getChainID(cdc, options.AppCli)
+	chainID, err := getChainID(options.AppCli)
 	if err != nil {
 		return nil, err
 	}
+
+	reg := types.NewInterfaceRegistry()
+	std.RegisterInterfaces(reg)
+	bank.RegisterInterfaces(reg)
 
 	e := Faucet{
 		appCli:          options.AppCli,
@@ -47,16 +46,20 @@ func NewFaucet(opts ...Option) (*Faucet, error) {
 		creditAmount:    options.CreditAmount,
 		maxCredit:       options.MaxCredit,
 		chainID:         chainID,
-		cdc:             cdc,
+		cdc:             codec.NewProtoCodec(reg),
 	}
 	return &e, e.loadKey()
 }
 
-func getChainID(cdc *codec.Codec, executable string) (string, error) {
+func getChainID(executable string) (string, error) {
 	output, err := cmdexec(executable, []string{"status"})
 	if err != nil {
 		return "", err
 	}
+
+	cdc := codec.NewLegacyAmino()
+	codec.RegisterEvidences(cdc)
+	cryptocodec.RegisterCrypto(cdc)
 
 	var status ctypes.ResultStatus
 	if err := cdc.UnmarshalJSON([]byte(output), &status); err != nil {
