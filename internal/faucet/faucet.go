@@ -8,6 +8,11 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
+const (
+	stdTxCodecType   = "cosmos-sdk/StdTx"
+	msgSendCodecType = "cosmos-sdk/MsgSend"
+)
+
 type Faucet struct {
 	appCli          string
 	chainID         string
@@ -22,7 +27,7 @@ type Faucet struct {
 }
 
 func NewFaucet(opts ...Option) (*Faucet, error) {
-	options := &defaultOptions
+	options := defaultOptions()
 	for _, opt := range opts {
 		opt(options)
 	}

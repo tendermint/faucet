@@ -8,6 +8,7 @@ func (f *Faucet) loadKey() error {
 	}
 
 	var err error
+
 	f.faucetAddress, err = f.cliexec([]string{"keys", "show", f.keyName, "-a"}, f.keyringPassword)
 	if err != nil {
 		return err
@@ -17,8 +18,9 @@ func (f *Faucet) loadKey() error {
 }
 
 func (f *Faucet) keyExists(keyname string) bool {
-	if _, err := f.cliexec([]string{"keys", "show", keyname}, f.keyringPassword); err == nil {
-		return true
+	if _, err := f.cliexec([]string{"keys", "show", keyname}, f.keyringPassword); err != nil {
+		return false
 	}
-	return false
+
+	return true
 }
