@@ -1,10 +1,18 @@
+BUILDDIR ?= $(CURDIR)/build
+
 all: install
 
-.PHONY: build
-build: OUT?=build/faucet
-build:
-	mkdir -p build
-	go build -o=$(OUT) ./cmd/faucet
+$(BUILDDIR)/:
+	mkdir -p $@
 
-install:
-	go install -mod=readonly ./cmd/faucet
+BUILD_TARGETS := build install
+build: $(BUILDDIR)/
+build: BUILD_ARGS=-o=$(BUILDDIR)
+
+$(BUILD_TARGETS):
+	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+clean:
+	rm -rf $(BUILDDIR)/
+
+.PHONY: all $(BUILD_TARGETS) clean
