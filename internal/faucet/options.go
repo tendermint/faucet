@@ -1,7 +1,7 @@
 package faucet
 
 const (
-	DefaultAppCli        = "gaiacli"
+	DefaultAppCli        = "gaiad"
 	DefaultKeyName       = "faucet"
 	DefaultDenom         = "uatom"
 	DefaultCreditAmount  = 10000000
