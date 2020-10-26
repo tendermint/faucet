@@ -1,11 +1,21 @@
 package faucet
 
-var defaultOptions = Options{
-	AppCli:       DefaultAppCli,
-	KeyName:      DefaultKeyName,
-	Denom:        DefaultDenom,
-	CreditAmount: DefaultCreditAmount,
-	MaxCredit:    DefaultMaximumCredit,
+const (
+	DefaultAppCli        = "gaiacli"
+	DefaultKeyName       = "faucet"
+	DefaultDenom         = "uatom"
+	DefaultCreditAmount  = 10000000
+	DefaultMaximumCredit = 100000000
+)
+
+func defaultOptions() *Options {
+	return &Options{
+		AppCli:       DefaultAppCli,
+		KeyName:      DefaultKeyName,
+		Denom:        DefaultDenom,
+		CreditAmount: DefaultCreditAmount,
+		MaxCredit:    DefaultMaximumCredit,
+	}
 }
 
 type Options struct {

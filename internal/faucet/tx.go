@@ -12,6 +12,7 @@ func (f *Faucet) Send(recipient string) error {
 	_, err := f.cliexec([]string{"tx", "send", f.keyName, recipient,
 		fmt.Sprintf("%d%s", f.creditAmount, f.denom), "--yes", "--chain-id", f.chainID},
 		f.keyringPassword, f.keyringPassword, f.keyringPassword)
+
 	return err
 }
 
@@ -35,6 +36,7 @@ func (f *Faucet) GetTotalSent(recipient string) (uint64, error) {
 	}
 
 	var total uint64
+
 	for _, tx := range result.Txs {
 		stdTx := tx.Tx.(auth.StdTx)
 		if len(stdTx.Msgs) == 0 {
@@ -42,12 +44,8 @@ func (f *Faucet) GetTotalSent(recipient string) (uint64, error) {
 		}
 
 		msg := stdTx.Msgs[0].(bank.MsgSend)
-
-		for _, coin := range msg.Amount {
-			if coin.Denom == f.denom {
-				total += coin.Amount.Uint64()
-			}
-		}
+		total += msg.Amount.AmountOf(f.denom).Uint64()
 	}
+
 	return total, nil
 }

@@ -8,8 +8,9 @@ import (
 )
 
 func cmdexec(bin string, args []string, inputs ...string) (string, error) {
-	cmd := exec.Command(bin, args...)
 	var stdout, stderr bytes.Buffer
+
+	cmd := exec.Command(bin, args...)
 	cmd.Stdout = &stdout
 	cmd.Stderr = &stderr
 
@@ -17,6 +18,7 @@ func cmdexec(bin string, args []string, inputs ...string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	defer stdin.Close()
 
 	if err := cmd.Start(); err != nil {
@@ -30,10 +32,10 @@ func cmdexec(bin string, args []string, inputs ...string) (string, error) {
 	}
 
 	if err := cmd.Wait(); err != nil {
-		return "", fmt.Errorf("error executing command: %s", string(stderr.Bytes()))
+		return "", fmt.Errorf("error executing command: %s", stderr.String())
 	}
 
-	return strings.TrimSpace(string(stdout.Bytes())), err
+	return strings.TrimSpace(stdout.String()), err
 }
 
 func (f *Faucet) cliexec(args []string, inputs ...string) (string, error) {
