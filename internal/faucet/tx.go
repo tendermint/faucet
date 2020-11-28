@@ -8,7 +8,7 @@ import (
 )
 
 func (f *Faucet) Send(recipient string) error {
-	_, err := f.cliexec([]string{"tx", "bank", "send", f.keyName, recipient,
+	_, err := f.cliexec([]string{"tx", "bank", "send", "--keyring-backend", "test", f.keyName, recipient,
 		fmt.Sprintf("%d%s", f.creditAmount, f.denom), "--yes", "--chain-id", f.chainID},
 		f.keyringPassword, f.keyringPassword, f.keyringPassword)
 
