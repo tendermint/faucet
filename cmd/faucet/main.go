@@ -7,8 +7,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/allinbits/cosmos-faucet/faucet"
 	"github.com/allinbits/cosmos-faucet/internal/environ"
-	"github.com/allinbits/cosmos-faucet/internal/faucet"
 )
 
 var (
