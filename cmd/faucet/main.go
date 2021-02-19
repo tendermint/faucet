@@ -48,13 +48,6 @@ func init() {
 func main() {
 	flag.Parse()
 
-	loggingLevel, err := log.ParseLevel(logLevel)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	log.SetLevel(loggingLevel)
-
 	configKeyringBackend, err := chaincmd.KeyringBackendFromString(keyringBackend)
 	if err != nil {
 		log.Fatal(err)
