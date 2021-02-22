@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/http"
@@ -8,12 +9,17 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/allinbits/cosmos-faucet/internal/environ"
-	"github.com/allinbits/cosmos-faucet/internal/faucet"
+	"github.com/tendermint/starport/starport/pkg/chaincmd"
+	chaincmdrunner "github.com/tendermint/starport/starport/pkg/chaincmd/runner"
+	"github.com/tendermint/starport/starport/pkg/cosmosfaucet"
+	"github.com/tendermint/starport/starport/pkg/cosmosver"
 )
 
 var (
-	logLevel string
-	port     int
+	logLevel       string
+	port           int
+	keyringBackend string
+	sdkVersion     string
 
 	keyName         string
 	keyMnemonic     string
@@ -27,40 +33,61 @@ var (
 func init() {
 	flag.StringVar(&logLevel, "log-level", environ.GetString("LOG_LEVEL", "info"), "log level")
 	flag.IntVar(&port, "port", environ.GetInt("PORT", 8000), "port to expose faucet")
+	flag.StringVar(&keyringBackend, "keyring-backend", environ.GetString("KEYRING_BACKEND", "os"), "keyring backend")
+	flag.StringVar(&sdkVersion, "sdk-version", environ.GetString("SDK_VERSION", "stargate"), "version of sdk (launchpad or stargate)")
 
-	flag.StringVar(&keyName, "key-name", environ.GetString("KEY_NAME", faucet.DefaultKeyName), "the key name to be used by faucet")
+	flag.StringVar(&keyName, "key-name", environ.GetString("KEY_NAME", cosmosfaucet.DefaultAccountName), "the key name to be used by faucet")
 	flag.StringVar(&keyMnemonic, "mnemonic", environ.GetString("MNEMONIC", ""), "mnemonic for restoring key")
 	flag.StringVar(&keyringPassword, "keyring-password", environ.GetString("KEYRING_PASSWORD", ""), "the password for accessing keyring")
-	flag.StringVar(&appCli, "cli-name", environ.GetString("CLI_NAME", faucet.DefaultAppCli), "the name of the cli executable")
-	flag.StringVar(&denom, "denom", environ.GetString("DENOM", faucet.DefaultDenom), "the coin denomination")
-	flag.Uint64Var(&creditAmount, "credit-amount", environ.GetUint64("CREDIT_AMOUNT", faucet.DefaultCreditAmount), "the amount to credit in each request")
-	flag.Uint64Var(&maxCredit, "max-credit", environ.GetUint64("MAX_CREDIT", faucet.DefaultMaximumCredit), "the maximum credit per account")
+	flag.StringVar(&appCli, "cli-name", environ.GetString("CLI_NAME", "gaia"), "the name of the cli executable")
+	flag.StringVar(&denom, "denom", environ.GetString("DENOM", cosmosfaucet.DefaultDenom), "the coin denomination")
+	flag.Uint64Var(&creditAmount, "credit-amount", environ.GetUint64("CREDIT_AMOUNT", cosmosfaucet.DefaultAmount), "the amount to credit in each request")
+	flag.Uint64Var(&maxCredit, "max-credit", environ.GetUint64("MAX_CREDIT", cosmosfaucet.DefaultMaxAmount), "the maximum credit per account")
 }
 
 func main() {
 	flag.Parse()
 
-	loggingLevel, err := log.ParseLevel(logLevel)
+	configKeyringBackend, err := chaincmd.KeyringBackendFromString(keyringBackend)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.SetLevel(loggingLevel)
+	ccoptions := []chaincmd.Option{
+		chaincmd.WithKeyringPassword(keyringPassword),
+		chaincmd.WithKeyringBackend(configKeyringBackend),
+		chaincmd.WithAutoChainIDDetection(),
+	}
 
-	f, err := faucet.NewFaucet(
-		faucet.KeyName(keyName),
-		faucet.Denom(denom),
-		faucet.WithMnemonic(keyMnemonic),
-		faucet.CliName(appCli),
-		faucet.KeyringPassword(keyringPassword),
-		faucet.CreditAmount(creditAmount),
-		faucet.MaxCredit(maxCredit),
+	if sdkVersion == "stargate" {
+		ccoptions = append(ccoptions,
+			chaincmd.WithVersion(cosmosver.StargateZeroFourtyAndAbove),
+		)
+	} else {
+		ccoptions = append(ccoptions,
+			chaincmd.WithVersion(cosmosver.LaunchpadAny),
+			chaincmd.WithLaunchpadCLI(appCli),
+		)
+	}
+
+	cc := chaincmd.New(appCli, ccoptions...)
+	cr, err := chaincmdrunner.New(context.Background(), cc)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	faucet, err := cosmosfaucet.New(
+		context.Background(),
+		cr,
+		cosmosfaucet.Account(keyName, keyMnemonic),
+		cosmosfaucet.Coin(creditAmount, maxCredit, denom),
 	)
+
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", f.ServeHTTP)
+	http.HandleFunc("/", faucet.ServeHTTP)
 	log.Infof("listening on :%d", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
