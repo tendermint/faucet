@@ -54,6 +54,7 @@ shows the available configuration options and respective defaults:
 | max-credit       	| MAX_CREDIT       	| the maximum credit per account                                   	| 100000000                    	|
 | sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                            | stargate                    	|
 | node            	| NODE            	| the address of the node that will handle the requests             |                    	        |
+| keyring-backend   | KEYRING_BACKEND   | keyring backend                                                   |                               |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
