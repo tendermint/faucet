@@ -6,28 +6,19 @@ The main purpose of this `faucet` is to avoid using RPC or API endpoints, and us
 specifically, the commands:
 
 ```bash
-$ {app}cli tx send
+$ {app}d tx bank send
 ```
 
 and:
 
 ```bash
-$ {app}cli query txs
+$ {app}d query txs
 ```
-
-As such, it is required that the `faucet` runs on a machine at least running a full node. If running a full node is
-not an option, you can alternatively install the chain CLI and make it point to an existing RPC endpoint:
-
-```bash
-$ {app}cli config node http://rpc.example.com:26657
-``` 
 
 Since the faucet only uses the CLI binary, it is compatible with practically any blockchain built with
 [cosmos-sdk](https://github.com/cosmos/cosmos-sdk) even if different types of keys are used (such as in
 [ethermint](https://github.com/cosmos/ethermint) for example).
 
-The `master` version supports `launchpad` only. Far `stargate` please use
-[stargate](https://github.com/allinbits/cosmos-faucet/tree/stargate) branch.
 
 ## Installation
 
@@ -57,10 +48,12 @@ shows the available configuration options and respective defaults:
 | key-name         	| KEY_NAME         	| the name of the key to be used by the faucet                     	| faucet                       	|
 | mnemonic         	| MNEMONIC         	| a mnemonic to restore an existing key (this is optional)         	|                              	|
 | keyring-password 	| KEYRING_PASSWORD 	| the password for accessing the keys keyring                      	|                              	|
-| cli-name         	| CLI_NAME         	| the name of the cli executable                                   	| gaiacli (gaiad for stargate) 	|
+| cli-name         	| CLI_NAME         	| the name of the cli executable                                   	| gaiad 	                    |
 | denom            	| DENOM            	| the denomination of the coin to be distributed by the faucet     	| uatom                        	|
 | credit-amount    	| CREDIT_AMOUNT    	| the amount to credit in each request                             	| 10000000                     	|
 | max-credit       	| MAX_CREDIT       	| the maximum credit per account                                   	| 100000000                    	|
+| sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                            | stargate                    	|
+| node            	| NODE            	| the address of the node that will handle the requests             |                    	        |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
@@ -84,7 +77,7 @@ INFO[0000] listening on :8000
 Start the faucet with:
 
 ```bash
-$ faucet --cli-name ethermintcli --denom ueth --keyring-password 12345678
+$ faucet --cli-name ethermintcli --denom ueth --keyring-password 12345678 --sdk-version launchpad
 INFO[0000] listening on :8000
 ```
 
@@ -92,6 +85,7 @@ or, with environment variables:
 
 ```bash
 $ export CLI_NAME=ethermintcli
+$ export SDK_VERSION=launchpad
 $ export DENOM=ueth
 $ export KEYRING_PASSWORD=12345678
 $ faucet
@@ -122,14 +116,6 @@ INFO[0000] listening on :8000
 You can request tokens by sending a `POST` request to any path on the server, with a key address in a `JSON`:
 
 ```bash
-$ curl -X POST -d '{"address": "cosmos1rlumjuvfjss4hq0vykrk0pwt7ws62vt3dj7cj2"}'
-{"status": "ok"}
+$ curl -X POST -d '{"address": "cosmos1kd63kkhtswlh5vcx5nd26fjmr9av74yd4sf8ve"}' http://localhost:8000
+{"transfers":[{"coin":"10000000uatom","status":"ok"}]}
 ```
-
----
-**NOTE**
-
-In order to make the API of this faucet compatible with others, it is possible to include other fields in the `JSON`
-sent to the server - it will only read `address` field though. Additionally, the post can be made to any path in the
-server. This is compatible for example with [cosmjs faucet](https://github.com/cosmos/cosmjs/tree/master/packages/faucet).
----
