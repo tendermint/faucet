@@ -28,6 +28,7 @@ var (
 	creditAmount    uint64
 	maxCredit       uint64
 	nodeAddress     string
+	legacySendCmd   bool
 )
 
 func init() {
@@ -42,6 +43,7 @@ func init() {
 	flag.Uint64Var(&creditAmount, "credit-amount", environ.GetUint64("CREDIT_AMOUNT", cosmosfaucet.DefaultAmount), "the amount to credit in each request")
 	flag.Uint64Var(&maxCredit, "max-credit", environ.GetUint64("MAX_CREDIT", cosmosfaucet.DefaultMaxAmount), "the maximum credit per account")
 	flag.StringVar(&nodeAddress, "node", environ.GetString("NODE", ""), "the address of the node that will handle the requests")
+	flag.BoolVar(&legacySendCmd, "legacy-send", environ.GetBool("LEGACY_SEND", false), "use legacy send command")
 }
 
 func main() {
@@ -57,6 +59,10 @@ func main() {
 		chaincmd.WithKeyringBackend(configKeyringBackend),
 		chaincmd.WithAutoChainIDDetection(),
 		chaincmd.WithNodeAddress(nodeAddress),
+	}
+
+	if legacySendCmd {
+		ccoptions = append(ccoptions, chaincmd.WithLegacySendCommand())
 	}
 
 	if sdkVersion == "stargate" {
