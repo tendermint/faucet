@@ -12,6 +12,9 @@ build: BUILD_ARGS=-o=$(BUILDDIR)
 $(BUILD_TARGETS):
 	go $@ -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
+test:
+	go test ./...
+
 clean:
 	rm -rf $(BUILDDIR)/
 

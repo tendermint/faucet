@@ -22,6 +22,13 @@ Since the faucet only uses the CLI binary, it is compatible with practically any
 
 ## Installation
 
+### Using cURL
+
+```bash
+$ curl https://get.starport.network/faucet! | bash 
+```
+
+### From Source
 You can build the faucet with:
 
 ```bash
@@ -41,22 +48,21 @@ $ make install
 You can configure the faucet either using command line flags or environment variables. The following table
 shows the available configuration options and respective defaults:
 
-| flag             	| env              	| description                                                      	| default                      	|
-|------------------	|------------------	|------------------------------------------------------------------	|------------------------------	|
-| log-level        	| LOG_LEVEL        	| the log level to be used (trace, debug, info, warn or error)     	| info                         	|
-| port             	| PORT             	| the port in which the server will be listening for HTTP requests 	| 8000                         	|
-| key-name         	| KEY_NAME         	| the name of the key to be used by the faucet                     	| faucet                       	|
-| mnemonic         	| MNEMONIC         	| a mnemonic to restore an existing key (this is optional)         	|                              	|
-| keyring-password 	| KEYRING_PASSWORD 	| the password for accessing the keys keyring                      	|                              	|
-| cli-name         	| CLI_NAME         	| the name of the cli executable                                   	| gaiad 	                    |
-| denom            	| DENOM            	| the denomination of the coin to be distributed by the faucet     	| uatom                        	|
-| credit-amount    	| CREDIT_AMOUNT    	| the amount to credit in each request                             	| 10000000                     	|
-| max-credit       	| MAX_CREDIT       	| the maximum credit per account                                   	| 100000000                    	|
-| sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                            | stargate                    	|
-| node            	| NODE            	| the address of the node that will handle the requests             |                    	        |
-| keyring-backend   | KEYRING_BACKEND   | keyring backend                                                   |                               |
-| legacy-send       | LEGACY_SEND       | use legacy send command on stargate chains                        | false                         |
-|                   |                   |                                                                   |                               |
+| flag             	| env              	| description                                                   | default                      	|
+|------------------	|------------------	|--------------------------------------------------------------	|------------------------------	|
+| port             	| PORT             	| tcp port where faucet will be listening for requests 	        | 8000                         	|
+| account-name    	| ACCOUNT_NAME     	| name of the account to be used by the faucet                  | faucet                       	|
+| mnemonic         	| MNEMONIC         	| mnemonic for restoring an account         	                |                              	|
+| keyring-password 	| KEYRING_PASSWORD 	| password for accessing keyring                      	        |                              	|
+| cli-name         	| CLI_NAME         	| name of the cli executable                                   	| gaiad 	                    |
+| denom            	| DENOM            	| denomination of the coins sent by default (comma separated)  	| uatom                        	|
+| credit-amount    	| CREDIT_AMOUNT    	| amount to credit in each request                             	| 10000000                     	|
+| max-credit       	| MAX_CREDIT       	| maximum credit per account                                   	| 100000000                    	|
+| sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                        | stargate                    	|
+| node            	| NODE            	| address of tendermint RPC endpoint for this chain             |                    	        |
+| keyring-backend   | KEYRING_BACKEND   | keyring backend to be used                                    |                               |
+| legacy-send       | LEGACY_SEND       | whether to use legacy send command                            | false                         |
+|                   |                   |                                                               |                               |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
@@ -80,7 +86,7 @@ INFO[0000] listening on :8000
 Start the faucet with:
 
 ```bash
-$ faucet --cli-name ethermintcli --denom ueth --keyring-password 12345678 --sdk-version launchpad
+$ faucet --cli-name ethermintcli --denoms ueth --keyring-password 12345678 --sdk-version launchpad
 INFO[0000] listening on :8000
 ```
 
@@ -89,7 +95,7 @@ or, with environment variables:
 ```bash
 $ export CLI_NAME=ethermintcli
 $ export SDK_VERSION=launchpad
-$ export DENOM=ueth
+$ export DENOMS=ueth
 $ export KEYRING_PASSWORD=12345678
 $ faucet
 INFO[0000] listening on :8000
@@ -100,7 +106,7 @@ INFO[0000] listening on :8000
 Start the faucet with:
 
 ```bash
-$ faucet --cli-name wasmcli --denom ucosm --keyring-password 12345678
+$ faucet --cli-name wasmcli --denoms ucosm --keyring-password 12345678
 INFO[0000] listening on :8000
 ```
 
@@ -108,7 +114,7 @@ or, with environment variables:
 
 ```bash
 $ export CLI_NAME=wasmcli
-$ export DENOM=ucosm
+$ export DENOMS=ucosm
 $ export KEYRING_PASSWORD=12345678
 $ faucet
 INFO[0000] listening on :8000
@@ -121,4 +127,11 @@ You can request tokens by sending a `POST` request to the faucet, with a key add
 ```bash
 $ curl -X POST -d '{"address": "cosmos1kd63kkhtswlh5vcx5nd26fjmr9av74yd4sf8ve"}' http://localhost:8000
 {"transfers":[{"coin":"10000000uatom","status":"ok"}]}
+```
+
+For requesting specific coins, use:
+
+```bash
+$ curl -X POST -d '{"address": "cosmos1kd63kkhtswlh5vcx5nd26fjmr9av74yd4sf8ve", "coins": ["10uatom", "20ueth"]}' http://localhost:8000
+{"transfers":[{"coin":"10uatom","status":"ok"}, {"coin":"20ueth","status":"ok"}]}
 ```
