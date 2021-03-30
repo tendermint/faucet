@@ -28,6 +28,16 @@ Since the faucet only uses the CLI binary, it is compatible with practically any
 $ curl https://get.starport.network/faucet! | bash 
 ```
 
+### Use docker image
+
+Use docker image `ghcr.io/tendermint/faucet`. You can use it in a Kubernetes pod with 
+[shareProcessNamespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/#configure-a-pod)
+or mount the chain binary using docker:
+
+```bash
+$ docker run -it -v ~/go/bin/gaiad:/usr/local/bin/gaiad ghcr.io/tendermint/faucet
+```
+
 ### From Source
 You can build the faucet with:
 
