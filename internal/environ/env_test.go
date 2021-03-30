@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/allinbits/cosmos-faucet/internal/environ"
+	"github.com/tendermint/faucet/internal/environ"
 )
 
 func TestEnviron(t *testing.T) {

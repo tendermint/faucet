@@ -1,4 +1,4 @@
-# cosmos-faucet
+# faucet
 
 A faucet that uses [cosmos-sdk](https://github.com/cosmos/cosmos-sdk) executable binaries only.
 
@@ -55,6 +55,8 @@ shows the available configuration options and respective defaults:
 | sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                            | stargate                    	|
 | node            	| NODE            	| the address of the node that will handle the requests             |                    	        |
 | keyring-backend   | KEYRING_BACKEND   | keyring backend                                                   |                               |
+| legacy-send       | LEGACY_SEND       | use legacy send command on stargate chains                        | false                         |
+|                   |                   |                                                                   |                               |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
@@ -114,7 +116,7 @@ INFO[0000] listening on :8000
 
 ### Request tokens
 
-You can request tokens by sending a `POST` request to any path on the server, with a key address in a `JSON`:
+You can request tokens by sending a `POST` request to the faucet, with a key address in a `JSON`:
 
 ```bash
 $ curl -X POST -d '{"address": "cosmos1kd63kkhtswlh5vcx5nd26fjmr9av74yd4sf8ve"}' http://localhost:8000

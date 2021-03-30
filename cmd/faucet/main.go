@@ -13,7 +13,7 @@ import (
 	"github.com/tendermint/starport/starport/pkg/cosmosfaucet"
 	"github.com/tendermint/starport/starport/pkg/cosmosver"
 
-	"github.com/allinbits/cosmos-faucet/internal/environ"
+	"github.com/tendermint/faucet/internal/environ"
 )
 
 var (
