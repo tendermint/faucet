@@ -65,7 +65,7 @@ shows the available configuration options and respective defaults:
 | mnemonic         	| MNEMONIC         	| mnemonic for restoring an account         	                |                              	|
 | keyring-password 	| KEYRING_PASSWORD 	| password for accessing keyring                      	        |                              	|
 | cli-name         	| CLI_NAME         	| name of the cli executable                                   	| gaiad 	                    |
-| denom            	| DENOM            	| denomination of the coins sent by default (comma separated)  	| uatom                        	|
+| denoms            | DENOM            	| denomination of the coins sent by default (comma separated)  	| uatom                        	|
 | credit-amount    	| CREDIT_AMOUNT    	| amount to credit in each request                             	| 10000000                     	|
 | max-credit       	| MAX_CREDIT       	| maximum credit per account                                   	| 100000000                    	|
 | sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                        | stargate                    	|
