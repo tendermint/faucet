@@ -25,6 +25,7 @@ var (
 	maxCredit       uint64
 	nodeAddress     string
 	legacySendCmd   bool
+	permitListFile  string
 )
 
 func init() {
@@ -76,5 +77,9 @@ func init() {
 	flag.BoolVar(&legacySendCmd, "legacy-send",
 		environ.GetBool("LEGACY_SEND", false),
 		"whether to use legacy send command",
+	)
+	flag.StringVar(&permitListFile, "permit-list-file",
+		environ.GetString("PERMIT_LIST_FILE", ""),
+		"permit list file path (line separated accounts)",
 	)
 }
