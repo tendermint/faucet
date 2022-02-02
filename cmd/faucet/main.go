@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 
@@ -78,11 +80,19 @@ func permitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
 
 			var req cosmosfaucet.TransferRequest
 
+			body, err := ioutil.ReadAll(r.Body)
+			if err != nil {
+				transferResponseError(w, http.StatusBadRequest, err)
+				return
+			}
+			r.Body = ioutil.NopCloser(bytes.NewReader(body))
+
 			// decode request into req.
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				transferResponseError(w, http.StatusBadRequest, err)
 				return
 			}
+			r.Body = ioutil.NopCloser(bytes.NewReader(body))
 
 			if accountIsPermitted(req.AccountAddress) {
 				// happy
