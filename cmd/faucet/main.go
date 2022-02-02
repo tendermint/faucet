@@ -88,17 +88,12 @@ func permitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
 			r.Body = ioutil.NopCloser(bytes.NewReader(body))
 
 			// decode request into req.
-			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			if err := json.NewDecoder(ioutil.NopCloser(bytes.NewReader(body))).Decode(&req); err != nil {
 				transferResponseError(w, http.StatusBadRequest, err)
 				return
 			}
-			r.Body = ioutil.NopCloser(bytes.NewReader(body))
 
-			if accountIsPermitted(req.AccountAddress) {
-				// happy
-				h.ServeHTTP(w, r) // call original handler
-			} else {
-				// not happy
+			if !accountIsPermitted(req.AccountAddress) {
 				err := fmt.Errorf("%s is not permitted to receive a transfer from the faucet", req.AccountAddress)
 				transferResponseError(w, http.StatusBadRequest, err)
 				return
