@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	chaincmdrunner "github.com/tendermint/starport/starport/pkg/chaincmd/runner"
 	"github.com/tendermint/starport/starport/pkg/cosmosfaucet"
 	"github.com/tendermint/starport/starport/pkg/cosmosver"
+	"github.com/tendermint/starport/starport/pkg/xhttp"
 )
 
 func main() {
@@ -67,4 +69,38 @@ func main() {
 	http.HandleFunc("/", faucet.ServeHTTP)
 	log.Infof("listening on :%d", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
+}
+
+func PermitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// target index faucet (POST) handler in cosmosfaucet for permit list
+		if r.URL.Path == "/" && r.Method == http.MethodPost {
+
+			var req cosmosfaucet.TransferRequest
+
+			// decode request into req.
+			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+				transferResponseError(w, http.StatusBadRequest, err)
+				return
+			}
+
+			if accountIsPermitted(req.AccountAddress) {
+				// happy
+				h.ServeHTTP(w, r) // call original handler
+			} else {
+				// not happy
+				err := fmt.Errorf("%s is not permitted to receive a transfer from the faucet", req.AccountAddress)
+				transferResponseError(w, http.StatusBadRequest, err)
+				return
+			}
+		}
+		h.ServeHTTP(w, r) // call original handler
+
+	})
+}
+
+func transferResponseError(w http.ResponseWriter, code int, err error) {
+	xhttp.ResponseJSON(w, code, cosmosfaucet.TransferResponse{
+		Error: err.Error(),
+	})
 }

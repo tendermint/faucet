@@ -2,6 +2,9 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
+	"log"
+	"strings"
 
 	"github.com/tendermint/starport/starport/pkg/cosmosfaucet"
 
@@ -13,19 +16,19 @@ const (
 )
 
 var (
-	port            int
-	keyringBackend  string
-	sdkVersion      string
-	keyName         string
-	keyMnemonic     string
-	keyringPassword string
-	appCli          string
-	defaultDenoms   string
-	creditAmount    uint64
-	maxCredit       uint64
-	nodeAddress     string
-	legacySendCmd   bool
-	permitListFile  string
+	port             int
+	keyringBackend   string
+	sdkVersion       string
+	keyName          string
+	keyMnemonic      string
+	keyringPassword  string
+	appCli           string
+	defaultDenoms    string
+	creditAmount     uint64
+	maxCredit        uint64
+	nodeAddress      string
+	legacySendCmd    bool
+	permitAccountSet *map[string]bool
 )
 
 func init() {
@@ -78,8 +81,30 @@ func init() {
 		environ.GetBool("LEGACY_SEND", false),
 		"whether to use legacy send command",
 	)
-	flag.StringVar(&permitListFile, "permit-list-file",
+	var permitListFilePath string
+	flag.StringVar(&permitListFilePath, "permit-list-file",
 		environ.GetString("PERMIT_LIST_FILE", ""),
 		"permit list file path (line separated accounts)",
 	)
+	if permitListFilePath != "" {
+		raw, err := ioutil.ReadFile(permitListFilePath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		permitAccountSet = &map[string]bool{}
+
+		// carriage return replace is just in case someone runs this on windows
+		for _, line := range strings.Split(strings.ReplaceAll(string(raw), "\r\n", "\n"), "\n") {
+			(*permitAccountSet)[line] = true
+		}
+	}
+}
+
+func accountIsPermitted(account string) bool {
+	if permitAccountSet == nil {
+		// if not specified then default to allowed
+		return true
+	}
+	// use permit list to determine access
+	return (*permitAccountSet)[account]
 }
