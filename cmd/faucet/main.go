@@ -66,12 +66,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", faucet.ServeHTTP)
+	http.HandleFunc("/", permitListMiddleware(faucet.ServeHTTP))
 	log.Infof("listening on :%d", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }
 
-func PermitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
+func permitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// target index faucet (POST) handler in cosmosfaucet for permit list
 		if r.URL.Path == "/" && r.Method == http.MethodPost {
@@ -95,7 +95,6 @@ func PermitListMiddleware(h http.HandlerFunc) http.HandlerFunc {
 			}
 		}
 		h.ServeHTTP(w, r) // call original handler
-
 	})
 }
 
