@@ -1,5 +1,6 @@
 FROM golang:alpine AS builder
 WORKDIR /src/app/
+RUN apk add git
 COPY go.mod go.sum* ./
 RUN go mod download
 COPY . .

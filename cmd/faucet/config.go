@@ -25,6 +25,7 @@ var (
 	maxCredit       uint64
 	nodeAddress     string
 	legacySendCmd   bool
+	coinType        string
 )
 
 func init() {
@@ -37,8 +38,8 @@ func init() {
 		"keyring backend to be used",
 	)
 	flag.StringVar(&sdkVersion, "sdk-version",
-		environ.GetString("SDK_VERSION", "stargate"),
-		"version of sdk (launchpad or stargate)",
+		environ.GetString("SDK_VERSION", "latest"),
+		"version of sdk (launchpad, stargate-40, stargate-44 or latest)",
 	)
 	flag.StringVar(&keyName, "account-name",
 		environ.GetString("ACCOUNT_NAME", cosmosfaucet.DefaultAccountName),
@@ -76,5 +77,9 @@ func init() {
 	flag.BoolVar(&legacySendCmd, "legacy-send",
 		environ.GetBool("LEGACY_SEND", false),
 		"whether to use legacy send command",
+	)
+	flag.StringVar(&coinType, "coin-type",
+		environ.GetString("COIN_TYPE", "118"),
+		"registered coin type number for HD derivation (BIP-0044)",
 	)
 }
