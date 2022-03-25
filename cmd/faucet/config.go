@@ -80,6 +80,6 @@ func init() {
 	)
 	flag.StringVar(&coinType, "coin-type",
 		environ.GetString("COIN_TYPE", "118"),
-		"registered coin type number for HD derivation (BIP-0044)",
+		"registered coin type number for HD derivation (BIP-0044), defaults from (satoshilabs/SLIP-0044)",
 	)
 }
