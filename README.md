@@ -19,7 +19,6 @@ Since the faucet only uses the CLI binary, it is compatible with practically any
 [cosmos-sdk](https://github.com/cosmos/cosmos-sdk) even if different types of keys are used (such as in
 [ethermint](https://github.com/cosmos/ethermint) for example).
 
-
 ## Installation
 
 ### Using cURL
@@ -30,7 +29,7 @@ $ curl https://get.starport.network/faucet! | bash
 
 ### Use docker image
 
-Use docker image `ghcr.io/tendermint/faucet`. You can use it in a Kubernetes pod with 
+Use docker image `ghcr.io/tendermint/faucet`. You can use it in a Kubernetes pod with
 [shareProcessNamespace](https://kubernetes.io/docs/tasks/configure-pod-container/share-process-namespace/#configure-a-pod)
 or mount the chain binary using docker:
 
@@ -39,6 +38,7 @@ $ docker run -it -v ~/go/bin/gaiad:/usr/local/bin/gaiad ghcr.io/tendermint/fauce
 ```
 
 ### From Source
+
 You can build the faucet with:
 
 ```bash
@@ -58,21 +58,21 @@ $ make install
 You can configure the faucet either using command line flags or environment variables. The following table
 shows the available configuration options and respective defaults:
 
-| flag             	| env              	| description                                                   | default                      	|
-|------------------	|------------------	|--------------------------------------------------------------	|------------------------------	|
-| port             	| PORT             	| tcp port where faucet will be listening for requests 	        | 8000                         	|
-| account-name    	| ACCOUNT_NAME     	| name of the account to be used by the faucet                  | faucet                       	|
-| mnemonic         	| MNEMONIC         	| mnemonic for restoring an account         	                |                              	|
-| keyring-password 	| KEYRING_PASSWORD 	| password for accessing keyring                      	        |                              	|
-| cli-name         	| CLI_NAME         	| name of the cli executable                                   	| gaiad 	                    |
-| denom            	| DENOM            	| denomination of the coins sent by default (comma separated)  	| uatom                        	|
-| credit-amount    	| CREDIT_AMOUNT    	| amount to credit in each request                             	| 10000000                     	|
-| max-credit       	| MAX_CREDIT       	| maximum credit per account                                   	| 100000000                    	|
-| sdk-version      	| SDK_VERSION      	| version of sdk (launchpad or stargate)                        | stargate                    	|
-| node            	| NODE            	| address of tendermint RPC endpoint for this chain             |                    	        |
-| keyring-backend   | KEYRING_BACKEND   | keyring backend to be used                                    |                               |
-| legacy-send       | LEGACY_SEND       | whether to use legacy send command                            | false                         |
-|                   |                   |                                                               |                               |
+| flag                | env               | description                                                   | default   |
+|---------------------|-------------------|-------------------------------------------------------------- |-----------|
+| port                | PORT              | tcp port where faucet will be listening for requests          | 8000      |
+| account-name        | ACCOUNT_NAME      | name of the account to be used by the faucet                  | faucet    |
+| mnemonic            | MNEMONIC          | mnemonic for restoring an account                             |           |
+| keyring-password    | KEYRING_PASSWORD  | password for accessing keyring                                |           |
+| cli-name            | DENOMS            | denomination of the coins sent by default (comma separated)   | uatom     |
+| credit-amount       | CREDIT_AMOUNT     | amount to credit in each request                              | 10000000  |
+| max-credit          | MAX_CREDIT        | maximum credit per account                                    | 100000000 |
+| sdk-version         | SDK_VERSION       | version of sdk (launchpad or stargate)                        | stargate  |
+| node                | NODE              | address of tendermint RPC endpoint for this chain             |           |
+| keyring-backend     | KEYRING_BACKEND   | keyring backend to be used                                    |           |
+| legacy-send         | LEGACY_SEND       | whether to use legacy send command                            | false     |
+| coin-type           | COIN_TYPE         | registered coin type number for HD derivation (BIP-0044)      | 118       |
+|                     |                   |                                                               |           |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
