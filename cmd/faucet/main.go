@@ -34,14 +34,23 @@ func main() {
 		ccoptions = append(ccoptions, chaincmd.WithLegacySendCommand())
 	}
 
-	if sdkVersion == string(cosmosver.Stargate) {
+	switch sdkVersion {
+	case "stargate-44":
 		ccoptions = append(ccoptions,
-			chaincmd.WithVersion(cosmosver.StargateZeroFourtyAndAbove),
+			chaincmd.WithVersion(cosmosver.StargateFortyFourVersion),
 		)
-	} else {
+	case "stargate-40":
 		ccoptions = append(ccoptions,
-			chaincmd.WithVersion(cosmosver.LaunchpadAny),
+			chaincmd.WithVersion(cosmosver.StargateFortyVersion),
+		)
+	case "launchpad":
+		ccoptions = append(ccoptions,
+			chaincmd.WithVersion(cosmosver.MaxLaunchpadVersion),
 			chaincmd.WithLaunchpadCLI(appCli),
+		)
+	default:
+		ccoptions = append(ccoptions,
+			chaincmd.WithVersion(cosmosver.Latest),
 		)
 	}
 
@@ -57,7 +66,7 @@ func main() {
 		faucetOptions[i] = cosmosfaucet.Coin(creditAmount, maxCredit, coin)
 	}
 
-	faucetOptions = append(faucetOptions, cosmosfaucet.Account(keyName, keyMnemonic))
+	faucetOptions = append(faucetOptions, cosmosfaucet.Account(keyName, keyMnemonic, coinType))
 
 	faucet, err := cosmosfaucet.New(context.Background(), cr, faucetOptions...)
 	if err != nil {
