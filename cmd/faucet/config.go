@@ -26,6 +26,7 @@ var (
 	nodeAddress     string
 	legacySendCmd   bool
 	coinType        string
+	home            string
 )
 
 func init() {
@@ -81,5 +82,9 @@ func init() {
 	flag.StringVar(&coinType, "coin-type",
 		environ.GetString("COIN_TYPE", "118"),
 		"registered coin type number for HD derivation (BIP-0044), defaults from (satoshilabs/SLIP-0044)",
+	)
+	flag.StringVar(&home, "home",
+		environ.GetString("HOME", ""),
+		"replaces the default home used by the chain",
 	)
 }
