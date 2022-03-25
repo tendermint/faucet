@@ -25,6 +25,7 @@ var (
 	maxCredit       uint64
 	nodeAddress     string
 	legacySendCmd   bool
+	coinType        string
 )
 
 func init() {
@@ -76,5 +77,9 @@ func init() {
 	flag.BoolVar(&legacySendCmd, "legacy-send",
 		environ.GetBool("LEGACY_SEND", false),
 		"whether to use legacy send command",
+	)
+	flag.StringVar(&coinType, "coin-type",
+		environ.GetString("COIN_TYPE", ""),
+		"registered coin type number for HD derivation (BIP-0044)",
 	)
 }

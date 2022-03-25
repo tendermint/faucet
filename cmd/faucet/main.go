@@ -36,11 +36,11 @@ func main() {
 
 	if sdkVersion == string(cosmosver.Stargate) {
 		ccoptions = append(ccoptions,
-			chaincmd.WithVersion(cosmosver.StargateZeroFourtyAndAbove),
+			chaincmd.WithVersion(cosmosver.StargateFortyFourVersion),
 		)
 	} else {
 		ccoptions = append(ccoptions,
-			chaincmd.WithVersion(cosmosver.LaunchpadAny),
+			chaincmd.WithVersion(cosmosver.MaxLaunchpadVersion),
 			chaincmd.WithLaunchpadCLI(appCli),
 		)
 	}
@@ -57,7 +57,7 @@ func main() {
 		faucetOptions[i] = cosmosfaucet.Coin(creditAmount, maxCredit, coin)
 	}
 
-	faucetOptions = append(faucetOptions, cosmosfaucet.Account(keyName, keyMnemonic))
+	faucetOptions = append(faucetOptions, cosmosfaucet.Account(keyName, keyMnemonic, coinType))
 
 	faucet, err := cosmosfaucet.New(context.Background(), cr, faucetOptions...)
 	if err != nil {
