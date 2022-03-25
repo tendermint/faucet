@@ -30,6 +30,10 @@ func main() {
 		chaincmd.WithNodeAddress(nodeAddress),
 	}
 
+	if home != "" {
+		ccoptions = append(ccoptions, chaincmd.WithHome(home))
+	}
+
 	if legacySendCmd {
 		ccoptions = append(ccoptions, chaincmd.WithLegacySendCommand())
 	}
@@ -48,6 +52,9 @@ func main() {
 			chaincmd.WithVersion(cosmosver.MaxLaunchpadVersion),
 			chaincmd.WithLaunchpadCLI(appCli),
 		)
+		if home != "" {
+			ccoptions = append(ccoptions, chaincmd.WithLaunchpadCLIHome(home))
+		}
 	default:
 		ccoptions = append(ccoptions,
 			chaincmd.WithVersion(cosmosver.Latest),
