@@ -1,0 +1,5 @@
+build:
+  docker:
+    faucet: Dockerfile
+run:
+  faucet: /bin/faucet
