@@ -58,22 +58,22 @@ $ make install
 You can configure the faucet either using command line flags or environment variables. The following table
 shows the available configuration options and respective defaults:
 
-| flag                | env               | description                                                   | default   |
-|---------------------|-------------------|-------------------------------------------------------------- |-----------|
-| port                | PORT              | tcp port where faucet will be listening for requests          | 8000      |
-| account-name        | ACCOUNT_NAME      | name of the account to be used by the faucet                  | faucet    |
-| mnemonic            | MNEMONIC          | mnemonic for restoring an account                             |           |
-| keyring-password    | KEYRING_PASSWORD  | password for accessing keyring                                |           |
-| cli-name            | DENOMS            | denomination of the coins sent by default (comma separated)   | uatom     |
-| credit-amount       | CREDIT_AMOUNT     | amount to credit in each request                              | 10000000  |
-| max-credit          | MAX_CREDIT        | maximum credit per account                                    | 100000000 |
-| sdk-version         | SDK_VERSION       | version of sdk (launchpad or stargate)                        | stargate  |
-| node                | NODE              | address of tendermint RPC endpoint for this chain             |           |
-| keyring-backend     | KEYRING_BACKEND   | keyring backend to be used                                    |           |
-| legacy-send         | LEGACY_SEND       | whether to use legacy send command                            | false     |
-| coin-type           | COIN_TYPE         | registered coin type number for HD derivation (BIP-0044)      | 118       |
-| home                | HOME              | replaces the default home used by the chain                   |           |
-|                     |                   |                                                               |           |
+| flag             | env               | description                                                   | default   |
+|------------------|-------------------|-------------------------------------------------------------- |-----------|
+| port             | PORT              | tcp port where faucet will be listening for requests          | 8000      |
+| account-name     | ACCOUNT_NAME      | name of the account to be used by the faucet                  | faucet    |
+| mnemonic         | MNEMONIC          | mnemonic for restoring an account                             |           |
+| keyring-password | KEYRING_PASSWORD  | password for accessing keyring                                |           |
+| denoms           | DENOMS            | denomination of the coins sent by default (comma separated)   | uatom     |
+| credit-amount    | CREDIT_AMOUNT     | amount to credit in each request                              | 10000000  |
+| max-credit       | MAX_CREDIT        | maximum credit per account                                    | 100000000 |
+| sdk-version      | SDK_VERSION       | version of sdk (launchpad or stargate)                        | stargate  |
+| node             | NODE              | address of tendermint RPC endpoint for this chain             |           |
+| keyring-backend  | KEYRING_BACKEND   | keyring backend to be used                                    |           |
+| legacy-send      | LEGACY_SEND       | whether to use legacy send command                            | false     |
+| coin-type        | COIN_TYPE         | registered coin type number for HD derivation (BIP-0044)      | 118       |
+| home             | HOME              | replaces the default home used by the chain                   |           |
+|                  |                   |                                                               |           |
 
 ### [gaia](https://github.com/cosmos/gaia) example
 
