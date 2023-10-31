@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"github.com/tendermint/starport/starport/pkg/cosmosfaucet"
+	"github.com/ignite/cli/ignite/pkg/cosmosfaucet"
 
 	"github.com/tendermint/faucet/internal/environ"
 )
