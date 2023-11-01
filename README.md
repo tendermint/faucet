@@ -70,7 +70,6 @@ shows the available configuration options and respective defaults:
 | sdk-version      | SDK_VERSION       | version of sdk (launchpad or stargate)                        | stargate  |
 | node             | NODE              | address of tendermint RPC endpoint for this chain             |           |
 | keyring-backend  | KEYRING_BACKEND   | keyring backend to be used                                    |           |
-| legacy-send      | LEGACY_SEND       | whether to use legacy send command                            | false     |
 | coin-type        | COIN_TYPE         | registered coin type number for HD derivation (BIP-0044)      | 118       |
 | home             | HOME              | replaces the default home used by the chain                   |           |
 |                  |                   |                                                               |           |
