@@ -1,6 +1,6 @@
 module github.com/tendermint/faucet
 
-go 1.16
+go 1.21
 
 require (
 	github.com/ignite/cli v0.27.1
